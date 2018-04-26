@@ -31,14 +31,19 @@ async function addToDB(req, res) {
 
 
 /*GET ALL MEMBERS */
-router.get('/member', function (req, res, next) {
+router.get('/member', function(req, res, next) {
+    Member.find({},(err,members)=>{
+        if(err)
+        res.status(500).json({errmsg:err});
+    res.status(200).json({msg:members});
+    });
+});
+
+/*GET SINGLE MEMBER */
+router.get('./memberdetail/:id', function (req, res, next) {
 
 
 });
-/*GET SINGLE MEMBER BY ID */
-router.get('./member/:id', function (req, res, next) {
-
-})
 
 /*UPDATE MEMBER*/
 router.put('./member/:id', function (req, res, next) {
