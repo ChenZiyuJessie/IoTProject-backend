@@ -35,48 +35,33 @@ router.get('/member', function (req, res, next) {
     Member.find({}, (err, members) => {
         if (err)
             res.status(500).json({ errmsg: err });
-        res.status(200).json({ msg: members });
-    });
-});
-/*GET SINGLE MEMBER */
-router.get('/member/:id', function (req, res, next) {
-    Member.findById({_id:req.params.id}, (err, member) => {
-        if (err)
-            res.status(500).json({ errmsg: err });
-        res.status(200).json({ msg: member });
+        res.status(200).json({msg:members });
     });
 });
    
-
 /*UPDATE MEMBER*/
-router.put('/memberedit', function (req, res, next) {
-     Member.findById(req.body._id,(err,member)=>{
-         if(err)
-         res.status(500).json({errmsg:err});
-         member.room=req.body.room;
-         member.membername=req.body.membername;
-         member.email=req.body.email;
-         member.tel=req.body.tel;
-         member.save((err, member) => {
-             if (err)
-                 res.status(500).json({ errmsg: err });
+router.put('/memberupdate', function (req, res, next) {
+    Member.findById(req.body._id, (err, member) => {
+        if (err)
+            res.status(500).json({ errmsg: err });
+        member.room = req.body.room;
+        member.membername = req.body.membername;
+        member.email=req.body.email;
+        member.tel=req.body.tel;
+        member.save((err, member) => {
+            if (err)
+                res.status(500).json({ errmsg: err });
 
-             res.status(200).json({ msg: member });
+            res.status(200).json({ msg: member });
 
-         });
-     })
-});
+        });
+    })
+    
+    });
 
 /*DELETE MEMBER */
 router.delete('memberdelete/:id', function (req, res, next) {
-    Member.findOneAndRemove({ _id: req.params.id }, (err, member) => {
-        if (err)
-            res.status(500).json({ errmsg: err });
-
-        res.status(200).json({ msg: member });
-
-    });
-
+   
 });
 
 module.exports = router;
