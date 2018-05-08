@@ -13,9 +13,9 @@ async function addToDB(req, res) {
 
     var member = new Member({
         room: req.body.room,
-        membername:req.body.membername,
-        email:req.body.email,
-        tel:req.body.tel,
+        membername: req.body.membername,
+        email: req.body.email,
+        tel: req.body.tel,
         password: Member.hashPassword(req.body.password),
         creation_dt: Date.now()
     });
@@ -35,33 +35,17 @@ router.get('/member', function (req, res, next) {
     Member.find({}, (err, members) => {
         if (err)
             res.status(500).json({ errmsg: err });
-        res.status(200).json({msg:members });
+        res.status(200).json({ msg: members });
     });
 });
-   
-/*UPDATE MEMBER*/
-router.put('/memberupdate', function (req, res, next) {
-    Member.findById(req.body._id, (err, member) => {
-        if (err)
-            res.status(500).json({ errmsg: err });
-        member.room = req.body.room;
-        member.membername = req.body.membername;
-        member.email=req.body.email;
-        member.tel=req.body.tel;
-        member.save((err, member) => {
-            if (err)
-                res.status(500).json({ errmsg: err });
-
-            res.status(200).json({ msg: member });
-
-        });
-    })
-    
-    });
 
 /*DELETE MEMBER */
-router.delete('memberdelete/:id', function (req, res, next) {
-   
+router.delete('/member/:id', function (req, res, next){
+    Member.findOneAndRemove({_id:req.params.id},(err,member)=> {
+        if (err)
+            res.status(500).json({ errmsg: err });
+        res.status(200).json({ msg:member});
+    });
 });
 
 module.exports = router;
