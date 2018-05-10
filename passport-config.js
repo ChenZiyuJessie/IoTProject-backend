@@ -4,7 +4,8 @@ var User = require('./models/user');
 
 passport.use('local', new LocalStrategy({
     usernameField: 'username',
-    passwordField: 'password'
+    passwordField: 'password',
+
 
 },
     function (username, password, done) {
