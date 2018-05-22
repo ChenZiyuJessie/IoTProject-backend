@@ -7,7 +7,6 @@ router.post('/register', function (req, res, next) {
   addToDB(req, res);
 });
 
-
 async function addToDB(req, res) {
 
   var user = new User({
@@ -25,9 +24,8 @@ async function addToDB(req, res) {
   }
 }
 
-
 router.post('/login', function (req, res, next) {
-  passport.authenticate('local', function (err, user, info) {
+  passport.authenticate('user-local', function (err, user, info) {
     if (err) { return res.status(501).json(err); }
     if (!user) { return res.status(501).json(info); }
     req.logIn(user, function (err) {
@@ -47,7 +45,7 @@ router.get('/logout', isValidUser, function (req, res, next) {
 })
 
 function isValidUser(req, res, next) {
-  if (req.isAuthenticated()) next();
+  if (req.isAuthenticated('user-local')) next();
   else return res.status(401).json({ message: 'Unauthorized Request' });
 }
 

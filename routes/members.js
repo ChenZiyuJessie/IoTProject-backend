@@ -1,13 +1,14 @@
 var express = require('express');
 var router = express.Router();
 var Member = require('../models/member');
+var passport = require('passport');
 
 
-/*SAVE MEMBER*/
+
+/*REGISTER MEMBER*/
 router.post('/memberadd', function (req, res, next) {
     addToDB(req, res);
 });
-
 
 async function addToDB(req, res) {
 
@@ -29,19 +30,7 @@ async function addToDB(req, res) {
     }
 }
 
-/*MEMBERS Login*/
-router.post('/login', function (req, res, next) {
-    passport.authenticate('local', function (err, user, info) {
-        if (err) { return res.status(501).json(err); }
-        if (!user) { return res.status(501).json(info); }
-        req.logIn(user, function (err) {
-            if (err) { return res.status(501).json(err); }
-            return res.status(200).json({ message: 'Login Success' });
-        });
-    })(req, res, next);
-});
-
-/*GET ALL MEMBERS */
+/*GET ALL MEMBERS*/
 router.get('/member', function (req, res, next) {
     Member.find({}, (err, members) => {
         if (err)
@@ -50,7 +39,7 @@ router.get('/member', function (req, res, next) {
     });
 });
 
-/*DELETE MEMBER */
+/*DELETE MEMBER*/
 router.delete('/member/:id', function (req, res, next){
     Member.findOneAndRemove({_id:req.params.id},(err,member)=> {
         if (err)
@@ -58,5 +47,31 @@ router.delete('/member/:id', function (req, res, next){
         res.status(200).json({ msg:member});
     });
 });
+
+/*Login*/
+router.post('/login', function (req, res, next) {
+    passport.authenticate('member-local', function (err, member, info) {
+        if (err) { return res.status(501).json(err); }
+        if (!member) { return res.status(501).json(info); }
+        req.logIn(member, function (err) {
+            if (err) { return res.status(501).json(err); }
+            return res.status(200).json({ message: 'Login Success' });
+        });
+    })(req, res, next);
+});
+
+router.get('/dashbord', isValidUser, function (req, res, next) {
+    return res.status(200).json(req.user);
+});
+
+router.get('/logout', isValidUser, function (req, res, next) {
+    req.logout();
+    return res.status(200).json({ message: 'Logout Success' });
+});
+
+function isValidUser(req, res, next) {
+    if (req.isAuthenticated('member-local')) next();
+    else return res.status(401).json({ message: 'Unauthorized Request' });
+}
 
 module.exports = router;

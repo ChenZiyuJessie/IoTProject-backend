@@ -16,7 +16,7 @@ Memberschema.statics.hashPassword = function hashPassword(password) {
     return bcrypt.hashSync(password, 10);
 }
 
-Memberschema.methods.isValid = function (hashedpassword) {
+Memberschema.methods.isPasswordValid = function (hashedpassword) {
     return bcrypt.compareSync(hashedpassword, this.password);
 }
 
