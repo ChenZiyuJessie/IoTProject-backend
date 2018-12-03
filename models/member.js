@@ -29,8 +29,16 @@ var Memberschema = new Schema({
         require: true
     },
     creation_dt: {
-        type: Date,
+        type: Number,
         require: true
+    },
+    token: {
+        type: String,
+        require: false
+    },
+    waterFlow: {
+        type: Number,
+        required: false
     }
 });
 
@@ -42,5 +50,8 @@ Memberschema.methods.isPasswordValid = function (hashedpassword) {
     return bcrypt.compareSync(hashedpassword, this.password);
 }
 
+Memberschema.methods.isAuthorized = function(password, token) {
+    return password == this.password || token == this.token;
+}
 
 module.exports = mongoose.model('Member', Memberschema);
