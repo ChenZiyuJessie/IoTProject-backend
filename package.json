@@ -6,7 +6,7 @@
     "start": "node ./bin/www"
   },
   "dependencies": {
-    "bcrypt": "^1.0.3",
+    "bcrypt": "^3.0.1",
     "body-parser": "^1.18.2",
     "connect-mongo": "^2.0.1",
     "cookie-parser": "~1.4.3",
@@ -14,6 +14,7 @@
     "debug": "~2.6.9",
     "express": "~4.16.0",
     "express-session": "^1.15.6",
+    "firebase": "^5.2.0",
     "git": "^0.1.5",
     "hbs": "~4.0.1",
     "http-errors": "~1.6.2",

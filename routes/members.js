@@ -15,9 +15,10 @@ async function addToDB(req, res) {
     var member = new Member({
         room: req.body.room,
         membername: req.body.membername,
-        email: req.body.email,
+        mail: req.body.mail,
         tel: req.body.tel,
         password: Member.hashPassword(req.body.password),
+        credit: req.body.credit,
         creation_dt: Date.now()
     });
 
@@ -27,11 +28,12 @@ async function addToDB(req, res) {
     }
     catch (err) {
         return res.status(501).json(err);
+    
     }
 }
 
 /*GET ALL MEMBERS*/
-router.get('/member', function (req, res, next) {
+router.get('/member', function (req, res) {
     Member.find({}, (err, members) => {
         if (err)
             res.status(500).json({ errmsg: err });
@@ -39,14 +41,37 @@ router.get('/member', function (req, res, next) {
     });
 });
 
+
+
 /*DELETE MEMBER*/
-router.delete('/member/:id', function (req, res, next){
+router.delete('/member/:id', function (req, res,next){
     Member.findOneAndRemove({_id:req.params.id},(err,member)=> {
         if (err)
             res.status(500).json({ errmsg: err });
         res.status(200).json({ msg:member});
     });
 });
+
+/*UPDATE MEMBER */
+router.put('/update/:id',function(req,res){
+    Member.findByIdAndUpdate({_id:req.params.id},
+        {$set: 
+            {room: req.body.room,
+            membername: req.body.membername,
+            mail: req.body.mail,
+            tel: req.body.tel,
+            credit: req.body.credit},
+            
+    },{
+        new:true
+    },(err,members)=>{
+         if (err)
+            res.status(500).json({ errmsg: err });
+        res.status(200).json({ msg: members });
+    });
+
+ });
+
 
 /*Login*/
 router.post('/login', function (req, res, next) {

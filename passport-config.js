@@ -50,9 +50,9 @@ passport.serializeUser(function (user, done) {
 });
     
 passport.deserializeUser(function (id, done) {
-    Member.findById(id,function(err,member){
+    Member.findById(id,function(err,user){
       if(err)return done(err);
-      if(member)return done(null,member);
+      if(user)return done(null,user);
     User.findById(id, function (err, user) {
         done(err, user);
     

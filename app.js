@@ -12,7 +12,7 @@ var cors = require('cors');
 var app = express();
 
 app.use(cors({
-  origin: ['http://localhost:4200', 'http://127.0.0.1:4200', 'http://localhost:8100', 'http://127.0.0.1:8100'],
+  origin: ['http://localhost:4200', 'http://192.168.1.119:4200', 'http://localhost:8100', 'http://127.0.0.1:8100', 'http://localhost:8080', 'http: //127.0.0.1:8080'],
   credentials: true
 }));
 
@@ -34,7 +34,9 @@ app.use(session({
     httpOnly: false,
     secure: false
   },
-  store: new MongoStore({ mongooseConnection: mongoose.connection })
+  store: new MongoStore({
+    mongooseConnection: mongoose.connection
+  })
 }));
 require('./passport-config');
 app.use(passport.initialize());
@@ -47,15 +49,17 @@ app.set('view engine', 'hbs');
 
 app.use(logger('dev'));
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.urlencoded({
+  extended: false
+}));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 
 //Routes
 app.use('/', indexRouter);
-app.use('/users', usersRouter);
-app.use('/members', membersRouter);
+app.use('/api/users', usersRouter);
+app.use('/api/members', membersRouter);
 
 
 // catch 404 and forward to error handler
