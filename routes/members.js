@@ -18,8 +18,10 @@ async function addToDB(req, res) {
         mail: req.body.mail,
         tel: req.body.tel,
         password: Member.hashPassword(req.body.password),
-        credit: req.body.credit,
-        creation_dt: Date.now()
+        creation_dt: new Date().getTime(),
+        credit: 0,
+        waterFlow: 0,
+        token: 'tetedamowang'
     });
 
     try {
@@ -74,22 +76,48 @@ router.put('/update/:id',function(req,res){
 
 
 /*Login*/
+// router.post('/login', function (req, res, next) {
+//     passport.authenticate('member-local', function (err, member, info) {
+//         if (err) { return res.status(501).json(err); }
+//         if (!member) { return res.status(501).json(info); }
+//         req.logIn(member, function (err) {
+//             if (err) { return res.status(501).json(err); }
+//             return res.status(200).json({ message: 'Login Success' });
+//         });
+//     })(req, res, next);
+// });
+
 router.post('/login', function (req, res, next) {
-    passport.authenticate('member-local', function (err, member, info) {
-        if (err) { return res.status(501).json(err); }
-        if (!member) { return res.status(501).json(info); }
-        req.logIn(member, function (err) {
-            if (err) { return res.status(501).json(err); }
-            return res.status(200).json({ message: 'Login Success' });
-        });
-    })(req, res, next);
-});
+    let membername = req.body.membername;
+    let password = req.body.password;
+    let token    = req.body.token;
+    if (!token) {
+        token = 'keke';
+    }
+    Member.findOne({ membername: membername }, function (err, member) {
+      if (err) { 
+        return res.status(501).json(err); 
+      }
+      if (!member) {
+        return res.status(501).json({ message: 'incorrect username.' });
+      }
+      if (!member.isAuthorized(password, token)) {
+        return res.status(501).json({ message: 'incorrect password or token.' });
+      }
+      return res.status(200).json(member);
+    });
+})
 
 router.get('/dashbord', isValidUser, function (req, res, next) {
     return res.status(200).json(req.user);
 });
 
-router.get('/logout', isValidUser, function (req, res, next) {
+// router.get('/logout', isValidUser, function (req, res, next) {
+//     req.logout();
+//     return res.status(200).json({ message: 'Logout Success' });
+// });
+
+router.get('/logout', function (req, res, next) {
     req.logout();
     return res.status(200).json({ message: 'Logout Success' });
 });
