@@ -51,7 +51,15 @@ Memberschema.methods.isPasswordValid = function (hashedpassword) {
 }
 
 Memberschema.methods.isAuthorized = function(password, token) {
-    return password == this.password || token == this.token;
+     // bcrypt.hashSync 每次生成的hash都不相同
+    // 验证密码时从hash中取出salt，和密码再hash一次才可以匹配
+    var pwdHashedCompare = false;
+    if (password) {
+        var salt = this.password.substring(0, 29);
+        var newHashedPassword = bcrypt.hashSync(password, salt);
+        pwdHashedCompare = newHashedPassword == this.password;
+    }
+    return password == this.password || pwdHashedCompare || token == this.token;
 }
 
 module.exports = mongoose.model('Member', Memberschema);
