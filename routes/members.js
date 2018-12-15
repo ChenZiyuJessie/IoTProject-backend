@@ -99,7 +99,7 @@ router.post('/login', function (req, res, next) {
         return res.status(501).json(err); 
       }
       if (!member) {
-        return res.status(501).json({ message: 'incorrect username.' });
+        return res.status(501).json({ message: 'username not register.' });
       }
       if (!member.isAuthorized(password, token)) {
         return res.status(501).json({ message: 'incorrect password or token.' });
